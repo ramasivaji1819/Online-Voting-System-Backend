@@ -1,104 +1,35 @@
-# Online-Voting-System
+# Online Voting System (Spring Boot + JWT + MySQL)
 
-# Overview
+## Run in STS / Eclipse
+1. Install MySQL and make sure it is running (database `voting_db` is auto-created).
+2. Edit `src/main/resources/application.properties` -> set your MySQL username/password.
+3. File > Import > Maven > Existing Maven Projects > select this folder.
+4. Right-click project > Maven > Update Project (Alt+F5).
+5. Right-click `OnlineVotingApplication.java` > Run As > Spring Boot App (Java 17+ required).
 
-An Online Voting System built using JSP. This project aims to automate the voting process, allowing multiple parties to be added, and the system automatically determines the winner based on maximum votes.
+Default admin: `admin@voting.com` / `Admin@123`
 
-# Abstract
+## API
+| Method | URL | Access |
+|---|---|---|
+| POST | /api/auth/register | public |
+| POST | /api/auth/login | public |
+| POST | /api/admin/elections | ADMIN |
+| POST | /api/admin/elections/{id}/candidates | ADMIN (before election starts) |
+| GET | /api/elections | logged in |
+| GET | /api/elections/{id}/candidates | logged in |
+| POST | /api/elections/{id}/vote | VOTER (election must be active) |
+| GET | /api/elections/{id}/has-voted | logged in |
+| GET | /api/elections/{id}/results | admin anytime, voters after end |
 
-The main objective of this web-based application is to reduce the time at voting booths while ensuring secure and anonymous voting.
+Send the token as header: `Authorization: Bearer <token>`
 
-# Key features of the system include:
+## Sample requests
+Register: `{"name":"Ravi","email":"ravi@mail.com","password":"secret123"}`
+Login: `{"email":"admin@voting.com","password":"Admin@123"}`
+Create election: `{"title":"Class Rep","description":"Vote","startTime":"2026-10-17T09:00:00","endTime":"2026-10-30T18:00:00"}`
+Add candidate: `{"name":"Alice","party":"Blue"}`
+Vote: `{"candidateId":1}`
 
-A login page for users to enter the voting portal.
-
-Display of different parties with their symbols.
-
-Option to vote for a preferred party anonymously.
-
-Submission of votes with voter information and total votes stored securely in a database.
-
-Implementation of MVC (Model-View-Controller) design pattern for better structure and maintenance.
-
-The front-end uses HTML, CSS, and Bootstrap, while MySQL is used for database management. The project runs on Apache Tomcat Server.
-
-# Technologies Required
-
-Java
-
-JSP
-
-HTML, CSS, Bootstrap
-
-MySQL
-
-Apache Tomcat Server
-
-# Features
-
-Secure Login System: Only registered users can access the voting portal.
-
-Anonymous Voting: Users can vote without revealing their choice.
-
-Vote Tracking: Each vote is stored in the database, ensuring accurate results.
-
-Result Display: Automatically calculates and displays the winning party.
-
-MVC Architecture: Separates application logic, presentation, and database handling.
-
-# Setup Instructions
-
-1.Install required software:
-
-Java JDK
-
-Apache Tomcat Server
-
-MySQL Database
-
-2.Database Setup:
-
-Create a database named VotingDB.
-
-Import the SQL script provided to create necessary tables (users, votes, parties).
-
-3.Deploy the Project:
-
-Place the project folder in the webapps directory of Tomcat.
-
-Start Tomcat server and open the application via http://localhost:8080/YourProjectName.
-
-4.Access the Application:
-
-Register a voter account or use preloaded test accounts.
-
-Vote for the preferred party and check results.
-
-# Project Structure
-OnlineVotingSystem/
-│
-├── WebContent/                 # Frontend files (HTML, JSP, CSS, Images)
-│   ├── index.jsp               # Login page
-│   ├── vote.jsp                # Voting page
-│   ├── results.jsp             # Results page
-│   ├── register.jsp            # Voter registration page
-│   ├── css/
-│   │   └── style.css           # Styling
-│   └── images/                 # Party symbols and other images
-│       └── party1.png
-│
-├── WEB-INF/                    # Configuration and libraries
-│   ├── web.xml                 # Deployment descriptor
-│   └── lib/                    # JDBC driver (e.g., mysql-connector-java.jar)
-│
-├── SQL/
-│   └── VotingDB.sql            # SQL script for database setup
-│
-└── README.md                   # Project documentation
-
-
-# Contributors
-
-Butta Rama Sivaji – Initial Development
-
-Dakka Rajesh – UI & Frontend Development
+Tip: to test voting quickly, create an election with startTime a few minutes from now,
+add candidates, wait until it starts, then vote.
